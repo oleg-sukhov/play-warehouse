@@ -9,5 +9,6 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs
+  javaWs,
+  "org.projectlombok" % "lombok" % "1.16.10"
 )

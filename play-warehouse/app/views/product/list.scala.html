@@ -1,0 +1,25 @@
+@import java.util
+@(products: util.List[Product])
+
+@main("Products catalog") {
+    <h2>List of products</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ean</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(product <- products) {
+            <tr>
+                <td><a href="@routes.ProductController.details(product.ean)">@product.ean</a> </td>
+                <td><a href="@routes.ProductController.details(product.name)">@product.name</a> </td>
+                <td><a href="@routes.ProductController.details(product.description)">@product.description</a> </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
