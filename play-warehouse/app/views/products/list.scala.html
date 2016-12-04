@@ -4,6 +4,18 @@
 @main("Products catalog") {
     <h2>List of products</h2>
 
+    <script>
+        function deleteProduct(urlToDelete) {
+            $.ajax({
+                url: urlToDelete,
+                type: 'DELETE',
+                success: function(results) {
+                   location.reload();
+                }
+            })
+        }
+    </script>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -18,8 +30,13 @@
                 <td><a href="@routes.ProductController.details(product.ean)">@product.ean</a> </td>
                 <td><a href="@routes.ProductController.details(product.name)">@product.name</a> </td>
                 <td><a href="@routes.ProductController.details(product.description)">@product.description</a> </td>
+                <td>
+                    <a class="btn btn-warning" href="@routes.ProductController.details(product.ean)">Edit</a>
+                    <a class="btn btn-danger" onclick="deleteProduct('@routes.ProductController.delete(product.ean)')">Delete</a>
+                </td>
             </tr>
         }
         </tbody>
     </table>
+    <a class="btn btn-primary" href="@routes.ProductController.create()">New Product</a>
 }

@@ -1,9 +1,8 @@
 package models;
 
 
-import exceptions.ProductNotFoundException;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -33,19 +32,22 @@ public class ProductStorage {
                 .collect(toList());
     }
 
-    public static Product findByEan(String ean) {
+    public static Optional<Product> findByEan(String ean) {
         return storage.stream()
                 .filter(product -> product.getEan().equals(ean))
-                .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException(ean));
+                .findFirst();
     }
 
-    public static boolean remove(Product product) {
+    public static boolean delete(Product product) {
         return storage.remove(product);
     }
 
-    public static void save() {
-
+    public static void saveOrUpdate(Product product) {
+        List<Product> toRemove = storage.stream()
+                .filter(pr -> pr.getEan().equals(product.getEan()))
+                .collect(toList());
+        storage.removeAll(toRemove);
+        storage.add(product);
     }
 
 }

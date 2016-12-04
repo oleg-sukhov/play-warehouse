@@ -1,0 +1,16 @@
+@(productForm: Form[Product])
+
+@main("Product form") {
+    <h1>Product form</h1>
+
+    @helper.form(action = routes.ProductController.save()) {
+        <fieldset>
+            <legend>Product (@productForm("name").valueOr("New"))</legend>
+            @helper.inputText(productForm("ean"), '_label -> "EAN")
+            @helper.inputText(productForm("name"), '_label -> "Name")
+            @helper.textarea(productForm("description"), 'label -> "Description")
+        </fieldset>
+        <input type="submit" class="btn btn-success" value="Save">
+    }
+
+}
