@@ -54,12 +54,13 @@ public class ProductController extends Controller {
         return redirect(routes.ProductController.list(1));
     }
 
+    @With(ExceptionLoggingAction.class)
     public Result delete(String ean) {
         return ProductStorage.findByEan(ean)
                 .map(product -> {
                     ProductStorage.delete(product);
                     return redirect(routes.ProductController.list(1));
                 })
-                .orElse(notFound("Can't find product with ean=" + ean));
+                .orElseThrow(() -> new ProductNotFoundException(ean));
     }
 }
