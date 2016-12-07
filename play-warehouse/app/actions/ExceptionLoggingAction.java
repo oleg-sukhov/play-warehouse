@@ -1,4 +1,4 @@
-package controllers;
+package actions;
 
 import exceptions.ProductNotFoundException;
 import play.mvc.Action;
