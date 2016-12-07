@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import play.data.validation.Constraints.Required;
 import play.mvc.PathBindable;
 import services.ProductService;
+import validators.annotations.EAN;
 
 import java.util.List;
 
@@ -14,12 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Product implements PathBindable<Product> {
 
-    @Required
+    @EAN
     public String ean;
     @Required
     public String name;
     public String description;
     public List<Tag> tags;
+    public byte[] picture;
 
     @Builder
     public Product(String ean, String name, String description, List<Tag> tags) {
