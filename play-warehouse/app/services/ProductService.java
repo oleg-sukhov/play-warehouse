@@ -1,5 +1,7 @@
-package models;
+package services;
 
+
+import models.Product;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +10,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-public class ProductStorage {
+public class ProductService {
 
     private static final List<Product> storage = initializeStorage();
 

@@ -1,8 +1,9 @@
 package controllers;
 
+import actions.ExceptionLoggingAction;
 import exceptions.ProductNotFoundException;
 import models.Product;
-import models.ProductStorage;
+import services.ProductService;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -27,7 +28,7 @@ public class ProductController extends Controller {
     }
 
     public Result list(Integer page) {
-        return ok(list.render(ProductStorage.products()));
+        return ok(list.render(ProductService.products()));
     }
 
     public Result create() {
@@ -36,7 +37,7 @@ public class ProductController extends Controller {
 
     @With(ExceptionLoggingAction.class)
     public Result details(String ean) {
-        return ProductStorage.findByEan(ean)
+        return ProductService.findByEan(ean)
                 .map(product -> ok(details.render(productForm.fill(product))))
                 .orElseThrow(() -> new ProductNotFoundException(ean));
     }
@@ -49,16 +50,16 @@ public class ProductController extends Controller {
         }
 
         Product product = bindedProductForm.get();
-        ProductStorage.saveOrUpdate(product);
+        ProductService.saveOrUpdate(product);
         flash("success", "Product < " + product + " > has successfully saved!!!");
         return redirect(routes.ProductController.list(1));
     }
 
     @With(ExceptionLoggingAction.class)
     public Result delete(String ean) {
-        return ProductStorage.findByEan(ean)
+        return ProductService.findByEan(ean)
                 .map(product -> {
-                    ProductStorage.delete(product);
+                    ProductService.delete(product);
                     return redirect(routes.ProductController.list(1));
                 })
                 .orElseThrow(() -> new ProductNotFoundException(ean));
