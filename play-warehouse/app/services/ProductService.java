@@ -2,13 +2,14 @@ package services;
 
 
 import models.Product;
+import models.Tag;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.range;
 
 public class ProductService {
 
@@ -19,12 +20,20 @@ public class ProductService {
     }
 
     private static List<Product> initializeStorage() {
-        return IntStream.range(0, 10)
+        return range(0, 10)
                 .mapToObj(index -> Product.builder()
                         .ean(UUID.randomUUID().toString())
                         .name("Product_" + index)
                         .description("Description_" + index)
+                        .tags(createRandomTags(index))
                         .build())
+                .peek(Product::linkTags)
+                .collect(toList());
+    }
+
+    private static List<Tag> createRandomTags(int productIndex) {
+        return range(productIndex, productIndex + 5)
+                .mapToObj(index -> new Tag((long) index, "Tag_" + index + " -> " + productIndex))
                 .collect(toList());
     }
 

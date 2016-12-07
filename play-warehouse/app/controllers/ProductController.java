@@ -3,12 +3,12 @@ package controllers;
 import actions.ExceptionLoggingAction;
 import exceptions.ProductNotFoundException;
 import models.Product;
-import services.ProductService;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.With;
+import services.ProductService;
 import views.html.products.details;
 import views.html.products.list;
 
@@ -36,10 +36,8 @@ public class ProductController extends Controller {
     }
 
     @With(ExceptionLoggingAction.class)
-    public Result details(String ean) {
-        return ProductService.findByEan(ean)
-                .map(product -> ok(details.render(productForm.fill(product))))
-                .orElseThrow(() -> new ProductNotFoundException(ean));
+    public Result details(Product product) {
+        return ok(details.render(productForm.fill(product)));
     }
 
     public Result save() {
