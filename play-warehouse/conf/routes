@@ -5,7 +5,7 @@ GET     /products               controllers.ProductController.list(page: Integer
 
 GET     /products/new           controllers.ProductController.create()
 
-GET     /products/:ean          controllers.ProductController.details(ean: String)
+GET     /products/:ean          controllers.ProductController.details(ean: models.Product)
 
 POST    /products/save          controllers.ProductController.save()
 

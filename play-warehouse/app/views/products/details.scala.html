@@ -5,12 +5,16 @@
 
     @helper.form(action = routes.ProductController.save()) {
         <fieldset>
-            <legend>Product (@productForm("name").valueOr("New"))</legend>
+            <legend>Product (@productForm("title").valueOr("New"))</legend>
             @helper.inputText(productForm("ean"), '_label -> "EAN")
             @helper.inputText(productForm("name"), '_label -> "Name")
-            @helper.textarea(productForm("description"), 'label -> "Description")
+            @helper.textarea(productForm("description"), '_label -> "Description")
+
+            @helper.repeat(productForm("tags"), min = 1) { tag =>
+                <span class="btn btn-primary">@tag("title").value</span>
+            }
         </fieldset>
+
         <input type="submit" class="btn btn-success" value="Save">
     }
-
 }
