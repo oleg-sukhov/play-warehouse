@@ -1,6 +1,7 @@
 package controllers;
 
 import actions.ExceptionLoggingAction;
+import com.avaje.ebean.Ebean;
 import com.google.common.io.Files;
 import exceptions.ProductNotFoundException;
 import models.Product;
@@ -10,13 +11,15 @@ import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Result;
 import play.mvc.With;
-import services.ProductService;
 import views.html.products.details;
 import views.html.products.list;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 public class ProductController extends Controller {
 
@@ -32,7 +35,7 @@ public class ProductController extends Controller {
     }
 
     public Result list(Integer page) {
-        return ok(list.render(ProductService.products()));
+        return ok(list.render(Ebean.find(Product.class).findList()));
     }
 
     public Result create() {
@@ -63,26 +66,31 @@ public class ProductController extends Controller {
             }
         }
 
-        ProductService.saveOrUpdate(product);
+        Ebean.save(product);
         flash("success", "Product < " + product + " > has successfully saved!!!");
         return redirect(routes.ProductController.list(1));
     }
 
     public Result picture(String ean) {
-        final Product product = ProductService.findByEan(ean)
-                .orElseThrow(() -> new ProductNotFoundException(ean));
-
-        if(product == null) return notFound("Can't load picture for product with ean" + ean);
+        final Product product = findProductByEan(ean).orElseThrow(() -> new ProductNotFoundException(ean));
+        if (product == null) return notFound("Can't load picture for product with ean" + ean);
         return ok(product.picture);
     }
 
     @With(ExceptionLoggingAction.class)
     public Result delete(String ean) {
-        return ProductService.findByEan(ean)
+        return findProductByEan(ean)
                 .map(product -> {
-                    ProductService.delete(product);
+                    Ebean.delete(product);
                     return redirect(routes.ProductController.list(1));
                 })
                 .orElseThrow(() -> new ProductNotFoundException(ean));
+    }
+
+    private Optional<Product> findProductByEan(String ean) {
+        return ofNullable(Ebean.find(Product.class)
+                .where()
+                .eq("ean", ean)
+                .findUnique());
     }
 }

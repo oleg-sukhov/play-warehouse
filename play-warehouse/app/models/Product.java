@@ -1,22 +1,34 @@
 package models;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Model;
 import exceptions.ProductNotFoundException;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import play.data.validation.Constraints.Required;
 import play.mvc.PathBindable;
-import services.ProductService;
 import validators.annotations.EAN;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
+import static java.util.Optional.ofNullable;
+
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class Product implements PathBindable<Product> {
+@Entity
+public class Product extends Model implements PathBindable<Product> {
+
+    @Id
+    public Long id;
 
     @EAN
     public String ean;
+
     @Required
     public String name;
     public String description;
@@ -37,7 +49,12 @@ public class Product implements PathBindable<Product> {
 
     @Override
     public Product bind(String key, String value) {
-        return ProductService.findByEan(value)
+        Product product = Ebean.find(Product.class)
+                .fetch("product")
+                .where()
+                .eq("product.ean", value)
+                .findUnique();
+        return ofNullable(product)
                 .orElseThrow(() -> new ProductNotFoundException(value));
     }
 
