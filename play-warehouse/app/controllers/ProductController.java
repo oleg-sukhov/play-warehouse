@@ -5,6 +5,8 @@ import com.avaje.ebean.Ebean;
 import com.google.common.io.Files;
 import exceptions.ProductNotFoundException;
 import models.Product;
+import models.StockItem;
+import models.Tag;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -17,9 +19,12 @@ import views.html.products.list;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 public class ProductController extends Controller {
 
@@ -66,7 +71,21 @@ public class ProductController extends Controller {
             }
         }
 
-        Ebean.save(product);
+        List<Tag> tags = product.getTags().stream()
+                .filter(tag -> nonNull(tag.getId()))
+                .map(tag -> Tag.findById(tag.getId()))
+                .collect(toList());
+
+        product.setTags(tags);
+
+        if (product.getId() == null) {
+            product.save();
+        } else
+            product.update();
+
+        product.save();
+        Ebean.save(StockItem.builder().product(product).quantity(0).build());
+
         flash("success", "Product < " + product + " > has successfully saved!!!");
         return redirect(routes.ProductController.list(1));
     }
@@ -88,9 +107,6 @@ public class ProductController extends Controller {
     }
 
     private Optional<Product> findProductByEan(String ean) {
-        return ofNullable(Ebean.find(Product.class)
-                .where()
-                .eq("ean", ean)
-                .findUnique());
+        return ofNullable(Product.find.where().eq("ean", ean).findUnique());
     }
 }

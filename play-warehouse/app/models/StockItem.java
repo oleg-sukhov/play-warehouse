@@ -1,12 +1,27 @@
 package models;
 
+import com.avaje.ebean.Model;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Data
-@ToString(exclude = "warehouse")
-public class StockItem {
-    public Warehouse warehouse;
-    public Product product;
+@EqualsAndHashCode(callSuper = true)
+@Builder
+@Entity
+public class StockItem extends Model {
+
+    @Id
+    public Long id;
     public int quantity;
+
+    @ManyToOne
+    public Product product;
+
+    @ManyToOne
+    public Warehouse warehouse;
 }
