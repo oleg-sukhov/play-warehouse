@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,10 +43,10 @@ public class Product extends Model implements PathBindable<Product> {
     public byte[] picture;
 
     @OneToMany(mappedBy = "product")
-    public List<StockItem> stockItems;
+    public List<StockItem> stockItems = new ArrayList<>();
 
     @ManyToMany
-    public List<Tag> tags;
+    public List<Tag> tags = new ArrayList<>();
 
     @Builder
     public Product(String ean, String name, String description, List<Tag> tags) {

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Data
@@ -12,6 +13,8 @@ import javax.persistence.OneToOne;
 @Entity
 public class Address extends Model {
 
+    @Id
+    public Long id;
     public String street;
     public String number;
     public String postalCode;

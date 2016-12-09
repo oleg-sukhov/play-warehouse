@@ -6,21 +6,26 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import play.data.validation.Constraints.Required;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(exclude = "products")
+@Entity
 public class Tag extends Model {
     public static final Find<Long, Tag> find = new Finder<>(Tag.class);
 
-    public long id;
+    @Id
+    public Long id;
     @Required
     public String title;
 
     @ManyToMany(mappedBy = "tags")
-    public List<Product> products;
+    public List<Product> products = new ArrayList<>();
 
     public Tag(Long id, String title) {
         this.id = id;
