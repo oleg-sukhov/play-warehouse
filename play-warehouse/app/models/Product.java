@@ -25,7 +25,7 @@ import static java.util.Optional.ofNullable;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@ToString(exclude = "stockItems")
+@ToString(exclude = {"stockItems", "tags"})
 @Entity
 public class Product extends Model implements PathBindable<Product> {
 

@@ -9,6 +9,7 @@ import models.StockItem;
 import models.Tag;
 import play.data.Form;
 import play.data.FormFactory;
+import play.libs.Yaml;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Result;
@@ -20,9 +21,10 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.LongStream;
 
-import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -36,6 +38,7 @@ public class ProductController extends Controller {
     }
 
     public Result index() {
+        initializeDatabase();
         return redirect(routes.ProductController.list(0));
     }
 
@@ -71,12 +74,13 @@ public class ProductController extends Controller {
             }
         }
 
-        List<Tag> tags = product.getTags().stream()
-                .filter(tag -> nonNull(tag.getId()))
-                .map(tag -> Tag.findById(tag.getId()))
+        List<Tag> tags = LongStream.range(1, 4)
+                .mapToObj(Long::valueOf)
+                .map(Tag::findById)
                 .collect(toList());
 
         product.setTags(tags);
+        product.linkTags();
 
         if (product.getId() == null) {
             product.save();
@@ -108,5 +112,12 @@ public class ProductController extends Controller {
 
     private Optional<Product> findProductByEan(String ean) {
         return ofNullable(Product.find.where().eq("ean", ean).findUnique());
+    }
+
+    private void initializeDatabase() {
+        if (Ebean.find(Tag.class).findRowCount() == 0) {
+            Map<String, List<Object>> all = (Map<String, List<Object>>) Yaml.load("initial-data.yml");
+            all.get("tags").forEach(Ebean::save);
+        }
     }
 }
