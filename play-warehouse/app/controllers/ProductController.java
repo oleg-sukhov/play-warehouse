@@ -39,7 +39,7 @@ public class ProductController extends Controller {
 
     public Result index() {
         initializeDatabase();
-        return redirect(routes.ProductController.list(1);
+        return redirect(routes.ProductController.list(1));
     }
 
     public Result list(Integer page) {
