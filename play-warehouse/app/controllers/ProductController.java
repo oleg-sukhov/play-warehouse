@@ -91,7 +91,7 @@ public class ProductController extends Controller {
         Ebean.save(StockItem.builder().product(product).quantity(0).build());
 
         flash("success", "Product < " + product + " > has successfully saved!!!");
-        return redirect(routes.ProductController.list(1));
+        return redirect(routes.ProductController.list(2));
     }
 
     public Result picture(String ean) {
