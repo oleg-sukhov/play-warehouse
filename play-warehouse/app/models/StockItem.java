@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 @Builder
 @Entity
 public class StockItem extends Model {
+    public static final Find<Long, StockItem> find = new Finder<>(StockItem.class);
 
     @Id
     public Long id;

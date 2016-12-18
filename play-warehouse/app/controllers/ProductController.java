@@ -5,7 +5,6 @@ import com.avaje.ebean.Ebean;
 import com.google.common.io.Files;
 import exceptions.ProductNotFoundException;
 import models.Product;
-import models.StockItem;
 import models.Tag;
 import play.data.Form;
 import play.data.FormFactory;
@@ -23,10 +22,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.LongStream;
 
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 public class ProductController extends Controller {
 
