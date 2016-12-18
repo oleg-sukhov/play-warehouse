@@ -74,21 +74,12 @@ public class ProductController extends Controller {
             }
         }
 
-        List<Tag> tags = LongStream.range(1, 4)
-                .mapToObj(Long::valueOf)
-                .map(Tag::findById)
-                .collect(toList());
-
-        product.setTags(tags);
-        product.linkTags();
-
         if (product.getId() == null) {
             product.save();
         } else
             product.update();
 
         product.save();
-        Ebean.save(StockItem.builder().product(product).quantity(0).build());
 
         flash("success", "Product < " + product + " > has successfully saved!!!");
         return redirect(routes.ProductController.list(1));
